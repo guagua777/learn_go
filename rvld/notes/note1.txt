@@ -1,0 +1,55 @@
+在 Go 语言中，[]byte("\177ELF") 是类型转换操作，而非切片字面量，因此使用 () 而不是 {}。下面详细解释：
+
+1. []byte() 是类型转换
+[]byte() 是将字符串转换为 []byte（字节切片）的类型转换语法。
+语法格式：目标类型(表达式)，用于将表达式的值转换为指定类型。
+例如：
+
+go
+s := "hello"
+b := []byte(s)  // 将字符串s转换为byte切片
+2. 与切片字面量 []byte{} 的区别
+切片字面量：使用 []byte{...} 语法，直接列出元素值（每个元素是 byte 类型）。
+
+go
+b := []byte{127, 69, 76, 70}  // 手动指定每个byte值
+类型转换：使用 []byte("...") 语法，将字符串自动转换为对应的 byte 切片（每个字符对应一个 byte 值）。
+
+go
+b := []byte("\177ELF")  // 字符串转byte切片
+3. "\177ELF" 的含义
+\177 是八进制转义字符，对应 ASCII 码 127（DEL 字符）。
+ELF 是字符串 "ELF"，对应 ASCII 码 69, 76, 70。
+因此，[]byte("\177ELF") 等价于：
+
+go
+[]byte{127, 69, 76, 70}
+这是 ELF 文件（可执行文件格式）的魔数（Magic Number），用于标识文件类型。
+4. 代码中的作用
+代码 if bytes.HasPrefix(contents, []byte("\177ELF")) 的作用是：
+
+检查 contents（文件内容的 byte 切片）是否以 ELF 魔数开头。
+若成立，则说明该文件是 ELF 格式的可执行文件。
+示例验证
+
+go
+package main
+
+import "fmt"
+
+func main() {
+    // 类型转换：字符串转byte切片
+    elfMagic := []byte("\177ELF")
+    fmt.Println("ELF魔数（byte切片）：", elfMagic)  // 输出：[127 69 76 70]
+    
+    // 切片字面量：手动指定byte值
+    elfMagicLiteral := []byte{127, 69, 76, 70}
+    fmt.Println("ELF魔数（字面量）：", elfMagicLiteral)  // 输出：[127 69 76 70]
+    
+    // 两者等价
+    fmt.Println("是否相等：", fmt.Sprintf("%v", elfMagic) == fmt.Sprintf("%v", elfMagicLiteral))  // 输出：true
+}
+总结
+[]byte("\177ELF") 是类型转换，将字符串转换为 byte 切片，因此使用 ()。
+切片字面量使用 {}，用于直接列出元素值。
+\177ELF 是 ELF 文件的魔数，用于标识文件类型。

@@ -26,7 +26,7 @@ func MakeSound(a Animal) {
 	fmt.Println(a.Speak())
 }
 
-func main() {
+func main1() {
 	d := Dog{}
 	c := Cat{}
 
